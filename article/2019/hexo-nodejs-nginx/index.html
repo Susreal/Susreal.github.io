@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>Hexo | 服务端大变样，Node.js 接管后台 - 摆柿阔落 | 肥宅快乐窝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="每每想到斥巨资购买的服务器只是用来部署一个静态博客网站，难免会觉得有些大材小用。考虑到自己经常会捯饬一些小应用，于是决定把服务端改造一下：用 Node.js 来搭建服务端，通过路由的方式来实现博客和应用的并存。">
+<meta name="keywords" content="Hexo,Nginx,Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo | 服务端大变样，Node.js 接管后台">
+<meta property="og:url" content="https://susreal.com/article/2019/hexo-nodejs-nginx/index.html">
+<meta property="og:site_name" content="摆柿阔落 | 肥宅快乐窝">
+<meta property="og:description" content="每每想到斥巨资购买的服务器只是用来部署一个静态博客网站，难免会觉得有些大材小用。考虑到自己经常会捯饬一些小应用，于是决定把服务端改造一下：用 Node.js 来搭建服务端，通过路由的方式来实现博客和应用的并存。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-18T09:39:14.355Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo | 服务端大变样，Node.js 接管后台">
+<meta name="twitter:description" content="每每想到斥巨资购买的服务器只是用来部署一个静态博客网站，难免会觉得有些大材小用。考虑到自己经常会捯饬一些小应用，于是决定把服务端改造一下：用 Node.js 来搭建服务端，通过路由的方式来实现博客和应用的并存。">
+
+
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133843246-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-133843246-1');
+</script>
+
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?5d19841c9c5598fa6259779af2276ded";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Hexo | 服务端大变样，Node.js 接管后台" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/archives">全部</a>
+                
+                <a class="navbar-item" href="/categories/PM">产品</a>
+                
+                <a class="navbar-item" href="/categories/Coder">代码</a>
+                
+                <a class="navbar-item" href="/playground">广场</a>
+                
+                <a class="navbar-item" href="/board">留言</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="/article/2019/hexo-nodejs-nginx/0.jpeg" alt="Hexo | 服务端大变样，Node.js 接管后台">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <!--added by susreal, top-->
+                
+                <!--end-->
+                <time class="level-item has-text-grey" datetime="2019-02-12T15:02:15.000Z">2019-02-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Coder/">Coder</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 分钟 读完 (大约 846 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Hexo | 服务端大变样，Node.js 接管后台
+            
+        </h1>
+        <div class="content">
+            <p>每每想到斥巨资购买的服务器只是用来部署一个静态博客网站，难免会觉得有些大材小用。考虑到自己经常会捯饬一些小应用，于是决定把服务端改造一下：用 <code>Node.js</code> 来搭建服务端，通过路由的方式来实现博客和应用的并存。</p>
+<a id="more"></a>
+<h1 id="Node-js-环境"><a href="#Node-js-环境" class="headerlink" title="Node.js 环境"></a>Node.js 环境</h1><p>Node.js 是一个基于 Chrome JavaScript 运行时建立的一个平台，具有速度快、性能好的突出优点。不仅适合前端码农使用，对于后端也是个不错的选择。首先在服务器上配置 Node.js 环境：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nodejs</span><br><span class="line">sudo apt-get install npm</span><br></pre></td></tr></table></figure>
+<h1 id="Express-框架"><a href="#Express-框架" class="headerlink" title="Express 框架"></a>Express 框架</h1><p>Express 是一个简洁而灵活的 Node.js Web应用框架，可以帮助我们快速创建 Web 应用。首先安装 Express 和几个重要的模块：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install express -g</span><br><span class="line">npm install body-parser -g</span><br><span class="line">npm install cookie-parser --g</span><br><span class="line">npm install multer -g</span><br></pre></td></tr></table></figure>
+<p>这里我们要用“骨架生成器” - express-generator 在 /home/ 目录下创建一个 Express 项目：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install express-generator -g</span><br><span class="line"><span class="hljs-built_in">cd</span> /home/</span><br><span class="line">express nodeServer --view=pug</span><br></pre></td></tr></table></figure>
+<p>进入项目目录安装依赖项 <code>npm install</code>，就可以启动应用了：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入网址 <a href="http://127.0.0.1:3000" target="_blank" rel="noopener">http://127.0.0.1:3000</a>，看到“Welcome to Express” 字样就说明成功啦！</p>
+<h1 id="在-Express-中配置博客路由"><a href="#在-Express-中配置博客路由" class="headerlink" title="在 Express 中配置博客路由"></a>在 Express 中配置博客路由</h1><p>假设我们的博客静态文件在 /home/hexoBlog，Express 工程在 /home/nodeServer，那么只需要这样修改 app.js 即可：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app.use(express.static(path.join(__dirname, <span class="hljs-string">'../hexoBlog/'</span>)));</span><br><span class="line">app.use(<span class="hljs-string">'/'</span>, indexRouter);</span><br></pre></td></tr></table></figure>
+<p>第一行的意思是将 ../hexoBlog/ 路径添加至静态目录，这句话相当于也是解析了 ‘/‘ 这个默认路径。第二行是 express-generator 自动生成的，意思是用 indexRouter 方法来处理默认路径。但是因为 Node.js 中间件函数是按顺序执行的，因此当我们访问 <a href="http://127.0.0.1:3000" target="_blank" rel="noopener">http://127.0.0.1:3000</a> 时，会先从静态目录中读取博客主页，而不会使用 indexRouter 来处理请求。</p>
+<p>重新运行一下 nodeServer，这时候访问 <a href="http://127.0.0.1:3000" target="_blank" rel="noopener">http://127.0.0.1:3000</a> 应该就能看到我们的博客主页啦！</p>
+<h1 id="进程保护"><a href="#进程保护" class="headerlink" title="进程保护"></a>进程保护</h1><p>Node.js 线程十分脆弱，一旦遇到运行错误便会严重到退出进程导致系统或应用瘫痪，这时候我们就需要 forever 帮助我们实现进程的重启：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install forever -g</span><br><span class="line"><span class="hljs-built_in">cd</span> /home/nodeServer</span><br><span class="line">forever start .bin/www</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以放心去玩耍啦！</p>
+<p>如果想重启或者停止应用也很简单：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">forever restart .bin/www</span><br><span class="line">forever stop .bin/www</span><br></pre></td></tr></table></figure>
+<h1 id="Nginx-反向代理"><a href="#Nginx-反向代理" class="headerlink" title="Nginx 反向代理"></a>Nginx 反向代理</h1><p>目前为止，我们的博客已经平稳运行在 <a href="http://127.0.0.1:3000" target="_blank" rel="noopener">http://127.0.0.1:3000</a>，如果希望通过域名访问则可以通过 Nginx 进行反向代理：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/nginx/sites-available/default</span><br></pre></td></tr></table></figure>
+<p>关于 Nginx 部分的配置详见<a href="/article/2019/hexo-cvm">上一篇</a>，不同的是我们添加了https的反向代理，首先定义了一个 upstream：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">upstream nodejs_3000 &#123;</span><br><span class="line">    server <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">3000</span>;</span><br><span class="line">    keepalive <span class="hljs-number">64</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在 server 中添加了对默认路径的设置：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">        proxy_set_header Host $http_host;</span><br><span class="line">        proxy_pass http:<span class="hljs-comment">//nodejs_3000;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重启 Nginx 服务，这样我们就可以通过自己购买的域名访问啦！</p>
+
+        </div>
+        <!--added by susreal, article visit calculation-->
+        
+            <div class="level is-size-7 has-text-grey">
+                <div class="level-left">
+                    <i class="far fa-eye"></i>
+                    <span>&nbsp;</span>
+                    <span id="busuanzi_container_page_pv" style="display: inline;">
+                        <span id="busuanzi_value_page_pv">0</span>
+                    </span>
+                </div>
+            </div>
+        
+        <!--end-->
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Hexo/">Hexo</a>, <a class="has-link-grey -link" href="/tags/Nginx/">Nginx</a>, <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+    
+        <div class="card">
+            <div class="card-content">
+                <h3 class="menu-label has-text-centered">喜欢这篇文章？投喂一下吧！(๑•ㅂ•́)و✧ </h3>
+                <div class="buttons is-centered">
+                    
+                        
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.JPG" alt="支付宝"></div>
+</a>
+
+                        
+                        
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.JPG" alt="微信"></div>
+</a>
+
+                        
+                </div>
+            </div>
+        </div>
+    
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/article/2019/hexo-cvm/">
+                <span class="level-item">Hexo | 如何将博客部署在云服务器</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        <!--added by susreal-->
+        <div class="block is-size-6">
+            <!-- <div class="level-left"> -->
+                <div>
+                    <span style="color:#1abc9c;">📧 邮箱：</span>
+                    <span>留下邮箱，别人回复后会收到通知喔</span>
+                </div>
+                <div>
+                    <span style="color:#1abc9c;">😉 头像：</span>
+                    <span>自动同步邮箱对应的<a href="https://cn.gravatar.com/">「Gravatar」</a>头像</span>
+                </div>
+            <!-- </div> -->
+        </div>
+        <!--end-->
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<!-- search and delete "+'&v='+o+d" -->
+<!-- <script src='/js/Valine.min.js'></script> -->
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: false,
+        verify: false,
+        app_id: 'xAg1tsfDq04PUHBx5GMTVQAV-gzGzoHsz',
+        app_key: 'I1Vc56bDFcfSKA2uzcXd63Qx',
+        placeholder: '随便说说什么吧',
+        avatar: 'identicon',
+        pageSize: 5
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/a3496ae7621e5f79c2cfca52ce9afa1d?s=128" alt="摆柿阔落">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block has-mb-6">
+                        摆柿阔落
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block has-mb-6">
+                        🖥 PM feat. Coder
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Shanghai, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        3
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" target="_blank" href="https://github.com/Susreal">
+                关注我</a>
+        </div>
+        
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://m.okjike.com/user/7AB42093-406C-46EC-854E-75CEF51CC236" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Jike</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">m.okjike.com</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Coder/">
+            <span class="level-start">
+                <span class="level-item">Coder</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Coder/Hexo/">
+            <span class="level-start">
+                <span class="level-item">Hexo</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/FreeTalk/">
+            <span class="level-start">
+                <span class="level-item">FreeTalk</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/FreeTalk/" style="font-size: 10px;">FreeTalk</a> <a href="/tags/Hexo/" style="font-size: 20px;">Hexo</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/Pages/" style="font-size: 10px;">Pages</a> <a href="/tags/icarus/" style="font-size: 15px;">icarus</a> <a href="/tags/腾讯云/" style="font-size: 10px;">腾讯云</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-nodejs-nginx/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-nodejs-nginx/0.jpeg" alt="Hexo | 服务端大变样，Node.js 接管后台">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-12T15:02:15.000Z">2019-02-12</time></div>
+                    <a href="/article/2019/hexo-nodejs-nginx/" class="has-link-black-ter is-size-6">Hexo | 服务端大变样，Node.js 接管后台</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-cvm/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-cvm/0.jpg" alt="Hexo | 如何将博客部署在云服务器">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T12:35:26.000Z">2019-02-10</time></div>
+                    <a href="/article/2019/hexo-cvm/" class="has-link-black-ter is-size-6">Hexo | 如何将博客部署在云服务器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-speed-test/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-speed-test/0.jpg" alt="Hexo | Pages服务速度对比">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T11:47:59.000Z">2019-02-06</time></div>
+                    <a href="/article/2019/hexo-speed-test/" class="has-link-black-ter is-size-6">Hexo | Pages服务速度对比</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-2/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-2/0.jpg" alt="Hexo | 两个你可能会用到的icarus主题配置">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:13:15.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-2/" class="has-link-black-ter is-size-6">Hexo | 两个你可能会用到的icarus主题配置</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-1/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-1/0.jpg" alt="Hexo | icarus主题初体验">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:10:01.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-1/" class="has-link-black-ter is-size-6">Hexo | icarus主题初体验</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/FreeTalk/">
+                        <span class="tag">FreeTalk</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hexo/">
+                        <span class="tag">Hexo</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Pages/">
+                        <span class="tag">Pages</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/icarus/">
+                        <span class="tag">icarus</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/腾讯云/">
+                        <span class="tag">腾讯云</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-nodejs-nginx/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-nodejs-nginx/0.jpeg" alt="Hexo | 服务端大变样，Node.js 接管后台">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-12T15:02:15.000Z">2019-02-12</time></div>
+                    <a href="/article/2019/hexo-nodejs-nginx/" class="has-link-black-ter is-size-6">Hexo | 服务端大变样，Node.js 接管后台</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-cvm/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-cvm/0.jpg" alt="Hexo | 如何将博客部署在云服务器">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T12:35:26.000Z">2019-02-10</time></div>
+                    <a href="/article/2019/hexo-cvm/" class="has-link-black-ter is-size-6">Hexo | 如何将博客部署在云服务器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-speed-test/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-speed-test/0.jpg" alt="Hexo | Pages服务速度对比">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T11:47:59.000Z">2019-02-06</time></div>
+                    <a href="/article/2019/hexo-speed-test/" class="has-link-black-ter is-size-6">Hexo | Pages服务速度对比</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-2/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-2/0.jpg" alt="Hexo | 两个你可能会用到的icarus主题配置">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:13:15.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-2/" class="has-link-black-ter is-size-6">Hexo | 两个你可能会用到的icarus主题配置</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-1/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-1/0.jpg" alt="Hexo | icarus主题初体验">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:10:01.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-1/" class="has-link-black-ter is-size-6">Hexo | icarus主题初体验</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/FreeTalk/">
+                        <span class="tag">FreeTalk</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hexo/">
+                        <span class="tag">Hexo</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Pages/">
+                        <span class="tag">Pages</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/icarus/">
+                        <span class="tag">icarus</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/腾讯云/">
+                        <span class="tag">腾讯云</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Hexo | 服务端大变样，Node.js 接管后台" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2019 摆柿阔落&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                </p>
+                <!--added by susreal, count pv and uv-->
+                
+                    <p class="is-size-7">   
+                        <span id="busuanzi_container_site_uv">
+                            ❤️ 感谢
+                            <span id="busuanzi_value_site_uv">0</span>
+                            位小伙伴的
+                        </span>
+                        <span id="busuanzi_container_site_pv">
+                            <span id="busuanzi_value_site_pv">0</span>
+                            次陪伴
+                        </span>
+                    </p>
+                
+                <!--end--> 
+                <p id="icp" class="is-size-7">   
+                    沪ICP XXXXXX 号
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/Susreal">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var hostname = location.hostname;
+        if (hostname!="susreal.com" && hostname!="www.susreal.com") {
+            var icp = document.getElementById('icp');
+            icp.style.display="none";
+        }
+    </script>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
