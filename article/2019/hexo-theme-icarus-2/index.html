@@ -92,7 +92,7 @@
 
 
 <div class="post-header-thumb">
-	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/15.jpg);"></div>
+	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/5.jpg);"></div>
 	<div class="post-header-thumb-cover">
 		<div class="post-header-thumb-container">
 			<div class="post-header-thumb-title">
@@ -110,9 +110,9 @@
 				with <a id="page-title-comment" href="#vcomments"></a>
 				
 				<div class="post-header-thumb-meta" style="font-size: 13px;">
-					<span class="post-count">本文字数：856 字</span>
+					<span class="post-count">本文字数：936 字</span>
 					<span>|</span>
-					<span class="post-count">阅读时长 ≈ 3 min</span>
+					<span class="post-count">阅读时长 ≈ 4 min</span>
 				</div>
 			</div>
 			<div class="post-tags">
@@ -145,9 +145,9 @@
 			with <a id="page-title-comment" href="#vcomments"></a>
 			
 			<div style="font-size: 13px;">
-				<span class="post-count">本文字数：856 字</span>
+				<span class="post-count">本文字数：936 字</span>
 				<span>|</span>
-				<span class="post-count">阅读时长 ≈ 3 min</span>
+				<span class="post-count">阅读时长 ≈ 4 min</span>
 			</div>
 		</div>
 	</div>
@@ -167,11 +167,18 @@
 <h1 id="一、文章置顶"><a href="#一、文章置顶" class="headerlink" title="一、文章置顶"></a>一、文章置顶</h1><p>博客默认是按照创建时间倒序排列的，有的时候我们希望可以置顶一些文章，icarus没有提供这个功能，因此我们还是需要进行一些改造。</p>
 <p>实现的效果是：写文章的时候在front-matter区域定义文章的权重（top），如果top的数值大于0，则将该文章置顶，并展示置顶标签。</p>
 <p>第一步，添加top属性在根目录的config文件中</p>
-<p><code>`</code> yml /_config.yml<br>index_generator:<br>  path: ‘’<br>  per_page: 10<br>  order_by:<br>    top: -1<br>    date: -1</p>
-<pre><code>
-第二步，修改generator.js，主要是在生成html代码时优先按照top排序
+<pre><code class="yml">/_config.yml
 
-``` js /‎⁨node_modules⁩/hexo-generator-index⁩/lib⁩/generator.js
+index_generator:
+  path: &#39;&#39;
+  per_page: 10
+  order_by: 
+    top: -1
+    date: -1
+</code></pre>
+<p><br>第二步，修改generator.js，主要是在生成html代码时优先按照top排序</p>
+<pre><code class="js">/⁨node_modules⁩/hexo-generator-index⁩/lib⁩/generator.js
+
 var paginationDir = config.pagination_dir || &#39;page&#39;;
 
 // added code
@@ -191,17 +198,25 @@ else return b.date - a.date;
 // end
 
 var path = config.index_generator.path || &#39;&#39;;
-</code></pre><p>第三步，修改模板中的post.md，添加top属性并设置默认值为0</p>
-<h2 id="js-scaffolds-post-md"><a href="#js-scaffolds-post-md" class="headerlink" title="` js /scaffolds/post.md"></a><code>`</code> js /scaffolds/post.md</h2><p>title: Hexo | 两个你可能会用到的icarus主题配置<br>date: 1549037595000<br>tags:</p>
-<h2 id="top-0"><a href="#top-0" class="headerlink" title="top: 0"></a>top: 0</h2><pre><code>
-最后，根据大家自己的喜好在前端添加标签咯~
+</code></pre>
+<p>第三步，修改模板中的post.md，添加top属性并设置默认值为0</p>
+<pre><code class="js">/scaffolds/post.md
+---
+title: {{ title }}
+date: {{ date }}
+tags:
+top: 0
+---
+</code></pre>
+<p>最后，根据大家自己的喜好在前端添加标签咯~</p>
+<pre><code class="js">/themes/icarus/layout/common/article.ejs
 
-``` js /themes/icarus/layout/common/article.ejs
 &lt;% if (post.top&gt;0) { %&gt;
 &lt;i class=&quot;fas fa-arrow-alt-circle-up&quot; style=&quot;color:#3273dc&quot;&gt;&lt;/i&gt;
 &lt;span class=&quot;level-item&quot; style=&quot;color:#3273dc&quot;&gt;&amp;nbsp;置顶&lt;/span&gt;
 &lt;% } %&gt;
-</code></pre><p>最后的效果如图，蓝色的置顶标签就是了：</p>
+</code></pre>
+<p>最后的效果如图，蓝色的置顶标签就是了：</p>
 <a data-fancybox="gallery" href="/article/2019/hexo-theme-icarus-2/1.png" data-height="800"><img src="/article/2019/hexo-theme-icarus-2/1.png"></a>
 <h1 id="二、添加阅读统计"><a href="#二、添加阅读统计" class="headerlink" title="二、添加阅读统计"></a>二、添加阅读统计</h1><p>valine插件在1.2.0版本之后提供了<a href="https://valine.js.org/visitor.html" target="_blank" rel="noopener">文章阅读量统计</a>的功能，好处是可以通过leancloud后台的可视化界面看到数据。目前只支持文章PV的统计，添加方式非常简单：</p>
 <ol>
@@ -211,12 +226,15 @@ var path = config.index_generator.path || &#39;&#39;;
 </ol>
 <p>具体的操作可以参考valine官方文档，这里不多介绍了。我用的是更加简单方便的<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener">busuanzi</a>进行统计：</p>
 <p>第一步，在icarus主题的head.ejs中添加脚本</p>
-<p><code>`</code> js /themes/icarus/layout/common/head.ejs<br>&lt;% if (has_config(‘visit’)) { %&gt;</p>
-<p><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><br>&lt;% } %&gt;</p>
-<pre><code>
-第二步，在网页footer里面统计站点的UV和PV
+<pre><code class="js">/themes/icarus/layout/common/head.ejs
 
-``` js /themes/icarus/layout/common/footer.ejs
+&lt;% if (has_config(&#39;visit&#39;)) { %&gt;
+&lt;script async=&quot;&quot; src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;
+&lt;% } %&gt;
+</code></pre>
+<p>第二步，在网页footer里面统计站点的UV和PV</p>
+<pre><code class="js">/themes/icarus/layout/common/footer.ejs
+
 &lt;span id=&quot;busuanzi_container_site_uv&quot;&gt;
     ❤️ 感谢
     &lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;0&lt;/span&gt;
@@ -226,9 +244,20 @@ var path = config.index_generator.path || &#39;&#39;;
     &lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;0&lt;/span&gt;
     次陪伴
 &lt;/span&gt;
-</code></pre><p>第三步，在每篇文章article里面统计阅读量PV，主页不显示</p>
-<p><code>`</code> js /themes/icarus/layout/common/article.ejs</p>
-<p><div class="level is-size-7 has-text-grey"><br>    <div class="level-left"><br>        <i class="far fa-eye"></i><br>        <span>&nbsp;</span><br>        <span id="busuanzi_container_page_pv" style="display: inline;"><br>            <span id="busuanzi_value_page_pv">0</span><br>        </span><br>    </div><br></div><br><code>`</code></p>
+</code></pre>
+<p>第三步，在每篇文章article里面统计阅读量PV，主页不显示</p>
+<pre><code class="js">/themes/icarus/layout/common/article.ejs
+
+&lt;div class=&quot;level is-size-7 has-text-grey&quot;&gt;
+    &lt;div class=&quot;level-left&quot;&gt;
+        &lt;i class=&quot;far fa-eye&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;&amp;nbsp;&lt;/span&gt;
+        &lt;span id=&quot;busuanzi_container_page_pv&quot; style=&quot;display: inline;&quot;&gt;
+            &lt;span id=&quot;busuanzi_value_page_pv&quot;&gt;0&lt;/span&gt;
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
 <p>效果大家在这个页面就可以找到啦~ 不过需要注意的是，busuanzi统计UV的逻辑是根据浏览器请求的cookie，不是严格意义上的设备唯一标识。逻辑严谨什么的并不重要，有人气才是关键对吧！</p>
 <p> (๑•ㅂ•́)و✧ </p>
 <p> 参考：<a href="https://www.jianshu.com/p/42a4efcdf8d7" target="_blank" rel="noopener">https://www.jianshu.com/p/42a4efcdf8d7</a></p>
@@ -236,7 +265,7 @@ var path = config.index_generator.path || &#39;&#39;;
 		
 		
 		<p class="post-info">
-			本文由 <a href="https://susreal.com">摆柿阔落</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为: Feb 18, 2019 05:39 pm
+			本文由 <a href="https://susreal.com">摆柿阔落</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为: Apr 28, 2019 03:37 pm
 		</p>
 	</div>
 </article>
@@ -273,7 +302,7 @@ var path = config.index_generator.path || &#39;&#39;;
 						<div class="item-title"><a href="/article/2019/hexo-nodejs-nginx/">Hexo | 服务端大变样，Node.js 接管后台</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 12, 2019</div>
-							<div class="item-meta-ico bg-ico-web" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-chat" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -311,7 +340,7 @@ var path = config.index_generator.path || &#39;&#39;;
 						<div class="item-title"><a href="/article/2019/hexo-speed-test/">Hexo | Pages服务速度对比</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 06, 2019</div>
-							<div class="item-meta-ico bg-ico-design" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-book" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -330,7 +359,7 @@ var path = config.index_generator.path || &#39;&#39;;
 						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-1/">Hexo | icarus主题初体验</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-note" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-design" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -379,7 +408,7 @@ var path = config.index_generator.path || &#39;&#39;;
                         <p id="chakhsu"></p>
                     	<p>Theme is <a href="https://github.com/cccyb/hexo-theme-pinghsu" target="_blank">Pinghsu</a> by <a href="https://susreal.com" target="_blank">摆柿阔落</a></p>
 						<p>Powered by <a href="https://hexo.io/" target="_blank" rel="nofollow">hexo</a></p>
-                        <p style="margin-top: 10px">站点总字数：5.4k</p>
+                        <p style="margin-top: 10px">站点总字数：5.5k</p>
                         
                         <p><span id="busuanzi_container_site_pv" style="display:none">本站总访问量 <span id="busuanzi_value_site_pv"></span> 次</span></p>
                         <p><span id="busuanzi_container_site_uv" style="display:none">本站访客数 <span id="busuanzi_value_site_uv"></span> 人次</span></p>

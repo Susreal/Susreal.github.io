@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://susreal.com/article/2019/hexo-theme-icarus-2/</loc>
+    
+    <lastmod>2019-04-28T07:37:02.516Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://susreal.com/playground/index.html</loc>
     
     <lastmod>2019-02-18T09:39:14.444Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>https://susreal.com/board/index.html</loc>
     
     <lastmod>2019-02-18T09:39:14.403Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://susreal.com/article/2019/hexo-theme-icarus-2/</loc>
-    
-    <lastmod>2019-02-18T09:39:14.396Z</lastmod>
     
   </url>
   
