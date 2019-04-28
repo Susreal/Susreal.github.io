@@ -7,6 +7,7 @@
     
     <link rel="dns-prefetch" href="//cdn.bootcss.com">
     <link rel="dns-prefetch" href="//secure.gravatar.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="renderer" content="webkit">
@@ -39,6 +40,9 @@
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
     
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 </head>
 <body class="bg-white" gtools_scp_screen_capture_injected="true">
 <!--[if lt IE 8]>
@@ -88,7 +92,7 @@
 
 
 <div class="post-header-thumb">
-	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/1.jpg);"></div>
+	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/8.jpg);"></div>
 	<div class="post-header-thumb-cover">
 		<div class="post-header-thumb-container">
 			<div class="post-header-thumb-title">
@@ -201,16 +205,16 @@ Coding|97ms|***62ms***|584ms|927ms
 ```yaml /source/CNAME
 susreal.com
 </code></pre><h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>Github 在 <code>仓库&gt;Settings&gt;GitHub Pages</code> 中绑定域名：</p>
-<img src="/article/2019/hexo-speed-test/2.png" title="GitHub">
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/2.png" data-height="800"><img src="/article/2019/hexo-speed-test/2.png"></a>
 <p>然后在域名的解析中添加两条 CNAME 类型的解析即可：</p>
-<img src="/article/2019/hexo-speed-test/3.png" title="GitHub">
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/3.png" data-height="800"><img src="/article/2019/hexo-speed-test/3.png"></a>
 <h2 id="Gitee"><a href="#Gitee" class="headerlink" title="Gitee"></a>Gitee</h2><p>Gitee 的自定义域名需要开启 Gitee Pages Pro 服务，这里划重点，这个服务需要 <strong>99 元一年！</strong> 如果不开启的话，是无法绑定自定义域名的。我这里是先试用了一个月：</p>
-<img src="/article/2019/hexo-speed-test/4.png" title="Gitee">
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/4.png" data-height="800"><img src="/article/2019/hexo-speed-test/4.png"></a>
 <p>如果开启强制 https 访问的话需要自己<a href="https://freessl.cn/?from=gitee" target="_blank" rel="noopener">配置域名证书</a>，证书是免费的，有效期一年。</p>
 <p>最后是同样的一步，在域名解析中添加 CNAME 类型的解析：</p>
-<img src="/article/2019/hexo-speed-test/5.png" title="Gitee">
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/5.png" data-height="800"><img src="/article/2019/hexo-speed-test/5.png"></a>
 <h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>Coding 的绑定域名服务是全免费的，并且可以申请由 Let’s Encrypt 下发的免费SSL证书，有效期三个月：</p>
-<img src="/article/2019/hexo-speed-test/6.png" title="Coding">
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/6.png" data-height="800"><img src="/article/2019/hexo-speed-test/6.png"></a>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>国内外这三个代码托管平台提供的 Pages 服务，从体验上来看都不错，可以帮助博主快速建站。从网络连接上来看，开源中国下的 Gitee 应该是表现最好的。如果需要绑定自己的域名，<code>Gitee</code> 需要额外支付每年 99 元的服务费，考虑到绑定自己的域名以及访问速度两个因素，我个人觉得还是值得的。</p>
 
 		
@@ -253,7 +257,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-nodejs-nginx/">Hexo | 服务端大变样，Node.js 接管后台</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 12, 2019</div>
-							<div class="item-meta-ico bg-ico-link" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-chat" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -272,7 +276,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-cvm/">Hexo | 如何将博客部署在云服务器</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 10, 2019</div>
-							<div class="item-meta-ico bg-ico-chat" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-image" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -291,7 +295,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-2/">Hexo | 两个你可能会用到的icarus主题配置</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-design" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-code" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -310,7 +314,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-1/">Hexo | icarus主题初体验</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-design" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-chat" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
