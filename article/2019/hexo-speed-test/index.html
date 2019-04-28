@@ -92,7 +92,7 @@
 
 
 <div class="post-header-thumb">
-	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/13.jpg);"></div>
+	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/14.jpg);"></div>
 	<div class="post-header-thumb-cover">
 		<div class="post-header-thumb-container">
 			<div class="post-header-thumb-title">
@@ -172,39 +172,67 @@
 </ol>
 <p>Gitlab 十分特别，它提供的 Pages 服务需要用户将构建命令以文件（<code>.gitlab-ci.yml</code>）的形式存储在云端，Gitlab 使用内建工具 <a href="https://gitlab.com/help/ci/README.md" target="_blank" rel="noopener">GitLab CI/CD</a> 生成静态文件并发布。也就是说，Gitlab 这个方案需要我们把 Hexo 博客整个工程托管在 Gitlab。该方法和其他方法差异较大，因此在下面的文章中，这种方案就不做介绍了。</p>
 <h1 id="多仓库部署"><a href="#多仓库部署" class="headerlink" title="多仓库部署"></a>多仓库部署</h1><p>Hexo 允许用户同时将博客部署在多个仓库中，只需要在博客的 <code>_config.yml</code> 中配置：</p>
-<p><code>`</code>yaml /_config.yml<br>deploy:<br>  type: git<br>  repository:<br>    github: <a href="https://github.com/Username/Username.github.io.git" target="_blank" rel="noopener">https://github.com/Username/Username.github.io.git</a><br>    gitee: <a href="https://gitee.com/Username/Username.git" target="_blank" rel="noopener">https://gitee.com/Username/Username.git</a><br>    coding: <a href="https://git.dev.tencent.com/Username/Username.git" target="_blank" rel="noopener">https://git.dev.tencent.com/Username/Username.git</a><br>  branch: master</p>
-<pre><code>
-把几个代码托管平台的 Pages 服务设置好，每次只需执行一次 `hexo d` 就可以将静态页面同时部署在多个平台上。下面我们来一起对比一下这几个平台 Pages 服务的速度。
+<pre><code class="yaml">/_config.yml
 
-# 速度对比
+deploy:
+  type: git
+  repository: 
+    github: https://github.com/Username/Username.github.io.git
+    gitee: https://gitee.com/Username/Username.git
+    coding: https://git.dev.tencent.com/Username/Username.git
+  branch: master
+</code></pre>
+<p>把几个代码托管平台的 Pages 服务设置好，每次只需执行一次 <code>hexo d</code> 就可以将静态页面同时部署在多个平台上。下面我们来一起对比一下这几个平台 Pages 服务的速度。</p>
+<h1 id="速度对比"><a href="#速度对比" class="headerlink" title="速度对比"></a>速度对比</h1><p>首先将博客同时部署在 <code>Github</code> 、 <code>Gitee</code> 和 <code>Coding</code> 上:</p>
+<ol>
+<li><a href="https://susreal.github.io" target="_blank" rel="noopener">https://susreal.github.io</a></li>
+<li><a href="https://susreal.gitee.io" target="_blank" rel="noopener">https://susreal.gitee.io</a></li>
+<li><a href="https://susreal.coding.me" target="_blank" rel="noopener">https://susreal.coding.me</a></li>
+</ol>
+<p>网络环境分别采用移动、联通和电信以及美国节点，通过 ping 域名的方式统计网络延迟：</p>
+<a data-fancybox="gallery" href="/article/2019/hexo-speed-test/1.png" data-height="800"><img src="/article/2019/hexo-speed-test/1.png"></a>
+<p>取连续20条延迟的平均值（仅供参考）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">-</th>
+<th style="text-align:center">移动</th>
+<th style="text-align:center">联通</th>
+<th style="text-align:center">电信</th>
+<th style="text-align:center">美国节点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Github</td>
+<td style="text-align:center">131ms</td>
+<td style="text-align:center">388ms</td>
+<td style="text-align:center">245ms</td>
+<td style="text-align:center">139ms</td>
+</tr>
+<tr>
+<td style="text-align:center">Gitee</td>
+<td style="text-align:center"><strong><em>22ms</em></strong></td>
+<td style="text-align:center">92ms</td>
+<td style="text-align:center"><strong><em>97ms</em></strong></td>
+<td style="text-align:center"><strong><em>59ms</em></strong></td>
+</tr>
+<tr>
+<td style="text-align:center">Coding</td>
+<td style="text-align:center">97ms</td>
+<td style="text-align:center"><strong><em>62ms</em></strong></td>
+<td style="text-align:center">584ms</td>
+<td style="text-align:center">927ms</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，在移动、电信以及美国节点的网络下，<code>Gitee</code> 的访问速度都表现出了明显的优势。测试过程中，Coding 的服务器一度timeout，无法连接。从 Coding 官方的说明来看，由于 Pages 服务可以自定义绑定域名，为了实现“免备案”，Coding 把服务器架在了海外，这也可以解释为何 Coding 的访问速度以及访问稳定性稍显逊色。</p>
+<h1 id="自定义域名绑定"><a href="#自定义域名绑定" class="headerlink" title="自定义域名绑定"></a>自定义域名绑定</h1><p>这三个代码托管平台都支持自定义域名绑定，我们可以在万网上购买域名，并解析到对应的平台上。首先，我们在 Hexo 工程的 <code>source</code> 目录下添加一个 CNAME 文件（没有后缀名），把购买的域名写在文件中：</p>
+<pre><code class="yaml">/source/CNAME
 
-首先将博客同时部署在 `Github` 、 `Gitee` 和 `Coding` 上:
-
-1. https://susreal.github.io
-2. https://susreal.gitee.io
-3. https://susreal.coding.me
-
-网络环境分别采用移动、联通和电信以及美国节点，通过 ping 域名的方式统计网络延迟：
-
-{% asset_img 1.png 网络延迟 %}
-
-取连续20条延迟的平均值（仅供参考）：
-
--|移动|联通|电信|美国节点
-:--:|:--:|:--:|:--:|:--:
-Github|131ms|388ms|245ms|139ms
-Gitee|***22ms***|92ms|***97ms***|***59ms***
-Coding|97ms|***62ms***|584ms|927ms
-
-可以看到，在移动、电信以及美国节点的网络下，`Gitee` 的访问速度都表现出了明显的优势。测试过程中，Coding 的服务器一度timeout，无法连接。从 Coding 官方的说明来看，由于 Pages 服务可以自定义绑定域名，为了实现“免备案”，Coding 把服务器架在了海外，这也可以解释为何 Coding 的访问速度以及访问稳定性稍显逊色。
-
-# 自定义域名绑定
-
-这三个代码托管平台都支持自定义域名绑定，我们可以在万网上购买域名，并解析到对应的平台上。首先，我们在 Hexo 工程的 `source` 目录下添加一个 CNAME 文件（没有后缀名），把购买的域名写在文件中：
-
-```yaml /source/CNAME
 susreal.com
-</code></pre><h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>Github 在 <code>仓库&gt;Settings&gt;GitHub Pages</code> 中绑定域名：</p>
+</code></pre>
+<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>Github 在 <code>仓库&gt;Settings&gt;GitHub Pages</code> 中绑定域名：</p>
 <a data-fancybox="gallery" href="/article/2019/hexo-speed-test/2.png" data-height="800"><img src="/article/2019/hexo-speed-test/2.png"></a>
 <p>然后在域名的解析中添加两条 CNAME 类型的解析即可：</p>
 <a data-fancybox="gallery" href="/article/2019/hexo-speed-test/3.png" data-height="800"><img src="/article/2019/hexo-speed-test/3.png"></a>
@@ -220,7 +248,7 @@ susreal.com
 		
 		
 		<p class="post-info">
-			本文由 <a href="https://susreal.com">摆柿阔落</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为: Feb 18, 2019 05:39 pm
+			本文由 <a href="https://susreal.com">摆柿阔落</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为: Apr 28, 2019 03:41 pm
 		</p>
 	</div>
 </article>
@@ -257,7 +285,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-nodejs-nginx/">Hexo | 服务端大变样，Node.js 接管后台</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 12, 2019</div>
-							<div class="item-meta-ico bg-ico-web" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-image" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -276,7 +304,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-cvm/">Hexo | 如何将博客部署在云服务器</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 10, 2019</div>
-							<div class="item-meta-ico bg-ico-chat" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-design" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
@@ -295,7 +323,7 @@ susreal.com
 						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-2/">Hexo | 两个你可能会用到的icarus主题配置</a></div>
 						<div class="item-meta clearfix">
 							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-web" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
+							<div class="item-meta-ico bg-ico-code" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
                             <div class="item-meta-cat">
                                 
                                 <a href="/categories/Coder/">Coder</a>
