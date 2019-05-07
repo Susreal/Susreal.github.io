@@ -1,168 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
+<title>Hexo | 如何将博客部署在云服务器 - 摆柿阔落 | 肥宅快乐窝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="之前简单介绍了将 Hexo 博客部署在代码托管平台的方法，这一篇介绍一下如何把博客建在自己购买的服务器上。">
+<meta name="keywords" content="Hexo,腾讯云,Nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo | 如何将博客部署在云服务器">
+<meta property="og:url" content="https://susreal.com/article/2019/hexo-cvm/index.html">
+<meta property="og:site_name" content="摆柿阔落 | 肥宅快乐窝">
+<meta property="og:description" content="之前简单介绍了将 Hexo 博客部署在代码托管平台的方法，这一篇介绍一下如何把博客建在自己购买的服务器上。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://susreal.com/article/2019/hexo-cvm/0.jpg">
+<meta property="og:updated_time" content="2019-05-07T12:29:17.444Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo | 如何将博客部署在云服务器">
+<meta name="twitter:description" content="之前简单介绍了将 Hexo 博客部署在代码托管平台的方法，这一篇介绍一下如何把博客建在自己购买的服务器上。">
+<meta name="twitter:image" content="https://susreal.com/article/2019/hexo-cvm/0.jpg">
+
+
     
-    <meta http-equiv="x-dns-prefetch-control" content="on">
-    
-    <link rel="dns-prefetch" href="//cdn.bootcss.com">
-    <link rel="dns-prefetch" href="//secure.gravatar.com">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
-    
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-    <meta name="renderer" content="webkit">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-transform">
-    <meta http-equiv="Cache-Control" content="no-siteapp">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
-    <link rel="shortcut icon" href="/images/favicon.ico">
-    
-    
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-    
-    <title>
-    
-        Hexo | 如何将博客部署在云服务器 - 摆柿阔落 | 肥宅快乐窝
-    
-    </title>
-    <meta name="keywords" content="产品经理,IT,博客,技术,PM,即刻,代码,码农,Coding,Blog,Hexo,Icarus,Github">
-    <meta name="description" content="肥宅快乐博客">
-    
-    <link href="//cdn.bootcss.com/highlight.js/9.10.0/styles/atom-one-light.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/style.min.css">
-    <!--[if lt IE 9]>
-    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
-    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.8.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
     
     
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-    <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
-    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133843246-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-133843246-1');
+</script>
+
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?5d19841c9c5598fa6259779af2276ded";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="bg-white" gtools_scp_screen_capture_injected="true">
-<!--[if lt IE 8]>
-<div class="browsehappy" role="dialog">
-    当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>。
-</div>
-<![endif]-->
-<header id="header" class="header bg-white">
-    <div class="navbar-container">
-        <a href="/" class="navbar-logo">
+<body class="is-2-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
             
-            <img src="/images/logo.png" alt="摆柿阔落 | 肥宅快乐窝">
+                <img src="/images/logo.png" alt="Hexo | 如何将博客部署在云服务器" height="28">
             
-        </a>
+            </a>
+        </div>
         <div class="navbar-menu">
             
-            <a href="/categories" class="">分类</a>
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/archives">全部</a>
+                
+                <a class="navbar-item" href="/categories/PM">产品</a>
+                
+                <a class="navbar-item" href="/categories/Coder">代码</a>
+                
+                <a class="navbar-item" href="/playground">广场</a>
+                
+                <a class="navbar-item" href="/board">留言</a>
+                
+            </div>
             
-            <a href="/tags" class="">标签</a>
-            
-            <a href="/archives" class="">归档</a>
-            
-            <a href="/links" class="">友情链接</a>
-            
-            <a href="/about" class="">关于我</a>
-            
-        </div>
-        <div class="navbar-mobile-menu" onclick="">
-            <span class="icon-menu cross"><span class="middle"></span></span>
-            <ul>
+            <div class="navbar-end">
                 
-                <li><a href="/categories" class="">分类</a></li>
                 
-                <li><a href="/tags" class="">标签</a></li>
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
                 
-                <li><a href="/archives" class="">归档</a></li>
                 
-                <li><a href="/links" class="">友情链接</a></li>
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
                 
-                <li><a href="/about" class="">关于我</a></li>
-                
-            </ul>
+            </div>
         </div>
     </div>
-</header></body></html>
-
-
-
-<div class="post-header-thumb">
-	<div class="post-header-thumb-op" style="background-image:url(/images/thumbs/7.jpg);"></div>
-	<div class="post-header-thumb-cover">
-		<div class="post-header-thumb-container">
-			<div class="post-header-thumb-title">
-				Hexo | 如何将博客部署在云服务器
-			</div>
-			<div class="post-header-thumb-meta">
-				
-				<span id="/article/2019/hexo-cvm/" class="leancloud-visitors" data-flag-title="Hexo | 如何将博客部署在云服务器">
-					<span class="leancloud-visitors-count">0</span> Views 
-				</span>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-8-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="/article/2019/hexo-cvm/0.jpg" alt="Hexo | 如何将博客部署在云服务器">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <!--added by susreal, top-->
                 
-                <time datetime="1549802126" itemprop="datePublished">发表于2019-02-10</time>
+                <!--end-->
+                <time class="level-item has-text-grey" datetime="2019-02-10T12:35:26.000Z">2019-02-10</time>
                 
-				    <a href="/categories/Coder/">Coder / </a><a href="/categories/Coder/Hexo/">Hexo</a>
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Coder/">Coder</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                </div>
                 
-				<div class="post-header-thumb-meta" style="font-size: 13px;">
-                    <span class="post-count">5 分钟读完</span>
-                    <span class="post-count">（大约 1.3k 字）</span>
-				</div>
-			</div>
-			<div class="post-tags">
-				
-				
-                <a href="/tags/Hexo/">Hexo</a>
                 
-                <a href="/tags/腾讯云/">腾讯云</a>
+                <span class="level-item has-text-grey">
+                    
+                    
+                    10 分钟 读完 (大约 1433 个字)
+                </span>
                 
-                <a href="/tags/Nginx/">Nginx</a>
-                
-				
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<article class="main-content post-page" itemscope itemtype="http://schema.org/Article">
-	<div class="post-header">
-		<h1 class="post-title" itemprop="name headline">
-			Hexo | 如何将博客部署在云服务器
-		</h1>
-		<div class="post-data">
-			
-			<span id="/article/2019/hexo-cvm/" class="leancloud-visitors" data-flag-title="Hexo | 如何将博客部署在云服务器">
-				<span class="leancloud-visitors-count">0</span> Views 
-			</span>
-			
-            <time datetime="1549802126" itemprop="datePublished">发表于2019-02-10</time>
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a href="/categories/Coder/">Coder / </a><a href="/categories/Coder/Hexo/">Hexo</a>
+                Hexo | 如何将博客部署在云服务器
             
-			<div style="font-size: 13px;">
-                <span class="post-count">5 分钟读完</span>
-                <span class="post-count">（大约 1.3k 字）</span>
-			</div>
-		</div>
-	</div>
-	<div id="post-content" class="post-content" itemprop="articleBody">
-		<p class="post-tags">
-            
-            
-            <a href="/tags/Hexo/">Hexo</a>
-            
-            <a href="/tags/腾讯云/">腾讯云</a>
-            
-            <a href="/tags/Nginx/">Nginx</a>
-            
-            
-        </p>
-		<p>之前简单介绍了将 Hexo 博客部署在代码托管平台的方法，这一篇介绍一下如何把博客建在自己购买的服务器上。</p>
+        </h1>
+        <div class="content">
+            <p>之前简单介绍了将 Hexo 博客部署在代码托管平台的方法，这一篇介绍一下如何把博客建在自己购买的服务器上。</p>
 <a id="more"></a>
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ol>
 <li>域名，可以在任何一个地方购买</li>
@@ -176,69 +208,42 @@
 </ol>
 <h2 id="服务器环境准备"><a href="#服务器环境准备" class="headerlink" title="服务器环境准备"></a>服务器环境准备</h2><p>以 Ubuntu 16.04 LTS 系统为例，这一步主要是在服务器上搭建 Git 和 Nginx 环境，Git 用来部署静态网站内容，Nginx 用来做代理。</p>
 <h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><p>首先，使用 apt 包管理工具更新本地包。更新完成后，下载并安装Git：</p>
-<pre><code class="bash">sudo apt update
-sudo apt install git
-</code></pre>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
 <p>完毕后查看版本信息来验证是否正确安装 Git，如果出现版本信息那就安装正确了：</p>
-<pre><code>git --version
-</code></pre><h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>类似的，我们通过以下面的命令安装 Nginx：</p>
-<pre><code class="bash">sudo apt update
-sudo apt install nginx
-</code></pre>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+<h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>类似的，我们通过以下面的命令安装 Nginx：</p>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install nginx</span><br></pre></td></tr></table></figure>
 <h2 id="博客自动发布"><a href="#博客自动发布" class="headerlink" title="博客自动发布"></a>博客自动发布</h2><p>下面我们要配置博客的 Git 环境，让我们在本地执行 <code>hexo d</code> 的时候直接将静态网站资源上传到云服务器上：</p>
 <h3 id="静态网站文件目录"><a href="#静态网站文件目录" class="headerlink" title="静态网站文件目录"></a>静态网站文件目录</h3><p>新建一个文件夹用于存放我们本地编译生产的静态文件，并修改权限：</p>
-<pre><code>mkdir /home/hexoBlog/
-chown -R $USER:$USER /home/hexoBlog/
-chmod -R 755 /home/hexoBlog/
-</code></pre><h3 id="服务器设置"><a href="#服务器设置" class="headerlink" title="服务器设置"></a>服务器设置</h3><p>首先我们创建一个名为 hexoBlog 的裸仓库（bare repo），然后修改目录的所有权和用户权限：</p>
-<pre><code>mkdir /home/git/
-chown -R $USER:$USER /home/git/
-chmod -R 755 /home/git/
-</code></pre><p>随后执行如下命令创建一个裸仓库：</p>
-<pre><code>cd /home/git/
-git init --bare hexoBlog.git
-</code></pre><p>然后，创建一个新的 git 钩子文件 <code>post-receive</code>，用于自动部署：</p>
-<pre><code>vim /home/git/hexoBlog.git/hooks/post-receive
-</code></pre><p>按 i 键编辑，添加两行代码，指定 Git 的工作树（源代码）和 Git 目录（配置文件）：</p>
-<pre><code class="bash">#!/bin/bash
-git --work-tree=/home/hexoBlog --git-dir=/home/git/hexoBlog.git checkout -f
-
-</code></pre>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">mkdir /home/hexoBlog/</span><br><span class="line">chown -R $USER:$USER /home/hexoBlog/</span><br><span class="line">chmod -R 755 /home/hexoBlog/</span><br></pre></td></tr></table></figure>
+<h3 id="服务器设置"><a href="#服务器设置" class="headerlink" title="服务器设置"></a>服务器设置</h3><p>首先我们创建一个名为 hexoBlog 的裸仓库（bare repo），然后修改目录的所有权和用户权限：</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">mkdir /home/git/</span><br><span class="line">chown -R $USER:$USER /home/git/</span><br><span class="line">chmod -R 755 /home/git/</span><br></pre></td></tr></table></figure>
+<p>随后执行如下命令创建一个裸仓库：</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">cd /home/git/</span><br><span class="line">git init --bare hexoBlog.git</span><br></pre></td></tr></table></figure>
+<p>然后，创建一个新的 git 钩子文件 <code>post-receive</code>，用于自动部署：</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">vim /home/git/hexoBlog.git/hooks/post-receive</span><br></pre></td></tr></table></figure>
+<p>按 i 键编辑，添加两行代码，指定 Git 的工作树（源代码）和 Git 目录（配置文件）：</p>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line"><span class="hljs-meta">#!/bin/bash</span></span><br><span class="line">git --work-tree=/home/hexoBlog --git-dir=/home/git/hexoBlog.git checkout -f</span><br></pre></td></tr></table></figure>
 <p>然后，按 Esc 键退出编辑模式，输入:wq 保存退出。</p>
 <p>修改文件权限，使得其可执行：</p>
-<pre><code>chmod +x /home/git/hexoBlog.git/hooks/post-receive
-</code></pre><h3 id="本地-Hexo-设置"><a href="#本地-Hexo-设置" class="headerlink" title="本地 Hexo 设置"></a>本地 Hexo 设置</h3><p>在 Hexo 的根目录 <code>_config.yml</code> 文件中添加部署：</p>
-<pre><code class="yaml">deploy:
-  type: git
-  repository: 
-    cvm: 服务器用户名@服务器IP地址:/home/git/hexoBlog
-  branch: master
-</code></pre>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">chmod +x /home/git/hexoBlog.git/hooks/post-receive</span><br></pre></td></tr></table></figure>
+<h3 id="本地-Hexo-设置"><a href="#本地-Hexo-设置" class="headerlink" title="本地 Hexo 设置"></a>本地 Hexo 设置</h3><p>在 Hexo 的根目录 <code>_config.yml</code> 文件中添加部署：</p>
+<figure class="highlight yaml hljs"><table><tr><td class="code"><pre><span class="line"><span class="hljs-attr">deploy:</span></span><br><span class="line"><span class="hljs-attr">  type:</span> <span class="hljs-string">git</span></span><br><span class="line"><span class="hljs-attr">  repository:</span> </span><br><span class="line"><span class="hljs-attr">    cvm:</span> <span class="hljs-string">服务器用户名@服务器IP地址:/home/git/hexoBlog</span></span><br><span class="line"><span class="hljs-attr">  branch:</span> <span class="hljs-string">master</span></span><br></pre></td></tr></table></figure>
 <p>这样博客自动发布的环境就配置好了。</p>
 <h2 id="服务器-Nginx-配置"><a href="#服务器-Nginx-配置" class="headerlink" title="服务器 Nginx 配置"></a>服务器 Nginx 配置</h2><h3 id="启动-Nginx-服务"><a href="#启动-Nginx-服务" class="headerlink" title="启动 Nginx 服务"></a>启动 Nginx 服务</h3><p>首先启动 Nginx 服务：</p>
-<pre><code>service nginx start
-</code></pre><p>启动服务后，我们测试一下是否正常：</p>
-<pre><code>wget http://127.0.0.1
-</code></pre><p>在浏览器中打开购买的服务器数字ip地址，如果有 Nginx 相关字样，就说明服务正常啦！</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">service nginx start</span><br></pre></td></tr></table></figure>
+<p>启动服务后，我们测试一下是否正常：</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">wget http://127.0.0.1</span><br></pre></td></tr></table></figure>
+<p>在浏览器中打开购买的服务器数字ip地址，如果有 Nginx 相关字样，就说明服务正常啦！</p>
 <h3 id="配置-Nginx-根目录"><a href="#配置-Nginx-根目录" class="headerlink" title="配置 Nginx 根目录"></a>配置 Nginx 根目录</h3><p>换句话说，就是如何通过 Nginx 找到我们上传到云服务器的静态文件，修改默认配置文件：</p>
-<pre><code class="bash">sudo vim /etc/nginx/sites-available/default
-</code></pre>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/nginx/sites-available/default</span><br></pre></td></tr></table></figure>
 <p>找到如下代码并修改 <code>root</code> 和 <code>server_name</code>：</p>
-<pre><code>server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /home/hexoBlog;
-
-    server_name 你购买的域名;
-
-    ......
-}
-</code></pre><h3 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h3><p>将域名A解析至你购买的服务器ip地址：</p>
-<a data-fancybox="gallery" href="/article/2019/hexo-cvm/1.png" data-height="800"><img src="/article/2019/hexo-cvm/1.png"></a>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server;</span><br><span class="line"></span><br><span class="line">    root /home/hexoBlog;</span><br><span class="line">    </span><br><span class="line">    server_name 你购买的域名;</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h3><p>将域名A解析至你购买的服务器ip地址：</p>
+<img src="/article/2019/hexo-cvm/1.png" title="DNS">
 <p>现在就算大功告成啦，在本地执行一次 <code>hexo d</code> 后，试试在浏览器中打开你购买的域名，有没有显示你的博客首页！</p>
 <h2 id="强制重定向至https"><a href="#强制重定向至https" class="headerlink" title="强制重定向至https"></a>强制重定向至https</h2><p>使用代码托管平台的 Pages 服务时，我们可以经常发现一个选项，就是强制使用https访问：</p>
-<a data-fancybox="gallery" href="/article/2019/hexo-cvm/2.png" data-height="800"><img src="/article/2019/hexo-cvm/2.png"></a>
+<img src="/article/2019/hexo-cvm/2.png" title="HTTPS">
 <p>如果我们想在自己的服务器上也这么配置，要怎么做呢？</p>
 <h3 id="购买ssl证书"><a href="#购买ssl证书" class="headerlink" title="购买ssl证书"></a>购买ssl证书</h3><p>我们可以通过很多地方购买<a href="https://freessl.cn/" target="_blank" rel="noopener">免费ssl证书</a>，购买后我们根据指示进行域名所有权的验证（推荐使用 DNS 验证，只需要配置一个 TXT 解析即可），验证完成后即可下载 Nginx 版本的证书。证书包含两个文件：</p>
 <ol>
@@ -246,42 +251,12 @@ git --work-tree=/home/hexoBlog --git-dir=/home/git/hexoBlog.git checkout -f
 <li>.key文件：证书的私钥文件</li>
 </ol>
 <h3 id="上传ssl证书"><a href="#上传ssl证书" class="headerlink" title="上传ssl证书"></a>上传ssl证书</h3><p>在本地的终端，将ssl证书上传到服务器：</p>
-<pre><code class="bash">sudo scp a.pem 用户名@服务器地址:/home/ssl/a.pem
-sudo scp a.key 用户名@服务器地址:/home/ssl/a.key
-</code></pre>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line">sudo scp a.pem 用户名@服务器地址:/home/ssl/a.pem</span><br><span class="line">sudo scp a.key 用户名@服务器地址:/home/ssl/a.key</span><br></pre></td></tr></table></figure>
 <h3 id="修改-Nginx-默认设置"><a href="#修改-Nginx-默认设置" class="headerlink" title="修改 Nginx 默认设置"></a>修改 Nginx 默认设置</h3><p>修改之前提到的 Nginx 默认设置文件：</p>
-<pre><code class="bash">sudo vim /etc/nginx/sites-available/default
-</code></pre>
+<figure class="highlight bash hljs"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/nginx/sites-available/default</span><br></pre></td></tr></table></figure>
 <p>根据自己的实际情况监听443端口，添加ssl证书相关内容；并将80端口的http访问重定向到https访问：</p>
-<pre><code>server {
-
-    listen 443;
-
-    root /home/hexoBlog;
-
-    index index.html index.htm index.nginx-debian.html;
-
-    server_name 购买的域名;
-    ssl on;
-
-    ssl_certificate /home/ssl/a.pem;
-    ssl_certificate_key /home/ssl/a.key;
-     ssl_session_timeout 5m;
-    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-
-server {
-    listen 80;
-    server_name susreal.com;
-    rewrite ^(.*)$ https://${server_name}$1 permanent;
-}
-</code></pre><p>以上，就完成了强制通过HTTPS访问的设置。</p>
+<figure class="highlight plain hljs"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">	listen 443;</span><br><span class="line">	</span><br><span class="line">	root /home/hexoBlog;</span><br><span class="line"></span><br><span class="line">	index index.html index.htm index.nginx-debian.html;</span><br><span class="line"></span><br><span class="line">	server_name 购买的域名;</span><br><span class="line">	ssl on;</span><br><span class="line"></span><br><span class="line">	ssl_certificate /home/ssl/a.pem;</span><br><span class="line">	ssl_certificate_key /home/ssl/a.key;</span><br><span class="line"> 	ssl_session_timeout 5m;</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line"></span><br><span class="line">	location / &#123;</span><br><span class="line">		try_files $uri $uri/ =404;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">	listen 80;</span><br><span class="line">	server_name susreal.com;</span><br><span class="line">	rewrite ^(.*)$ https://$&#123;server_name&#125;$1 permanent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上，就完成了强制通过HTTPS访问的设置。</p>
 <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><blockquote>
 <ol>
 <li>《<a href="https://cloud.tencent.com/developer/article/1159076" target="_blank" rel="noopener">如何在Ubuntu系统上安装Git</a>》</li>
@@ -291,427 +266,657 @@ server {
 </ol>
 </blockquote>
 
-		
-		
-		<p class="post-info">
-			本文由 <a href="https://susreal.com">摆柿阔落</a> 创作，采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="external nofollow">知识共享署名4.0</a> 国际许可协议进行许可<br>本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名<br>最后编辑时间为: Feb 18, 2019 05:39 pm
-		</p>
-	</div>
-</article>
-<div id="post-bottom-bar" class="post-bottom-bar">
-	<div class="bottom-bar-inner">
-		<div class="bottom-bar-items social-share left">
-			<span class="bottom-bar-item">Share : </span>
-			<span class="bottom-bar-item bottom-bar-facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=https://susreal.com/article/2019/hexo-cvm/index.html" target="_blank" title="Hexo | 如何将博客部署在云服务器" rel="nofollow">facebook</a></span>
-			<span class="bottom-bar-item bottom-bar-twitter"><a href="https://twitter.com/intent/tweet?url=https://susreal.com/article/2019/hexo-cvm/&text=Hexo | 如何将博客部署在云服务器" target="_blank" title="Hexo | 如何将博客部署在云服务器" rel="nofollow">Twitter</a></span>
-			<span class="bottom-bar-item bottom-bar-weibo"><a href="http://service.weibo.com/share/share.php?url=&amp;title=Hexo | 如何将博客部署在云服务器" target="_blank" title="Hexo | 如何将博客部署在云服务器" rel="nofollow">Weibo</a></span>
-			<span class="bottom-bar-item bottom-bar-qrcode"><a href="//pan.baidu.com/share/qrcode?w=300&amp;h=300&amp;url=https://susreal.com/article/2019/hexo-cvm/index.html" target="_blank" rel="nofollow">QRcode</a></span>
-		</div>
-		<div class="bottom-bar-items right">
-            
-            <span class="bottom-bar-item"><a href="/article/2019/hexo-nodejs-nginx/">←</a></span>
-            
-            
-            <span class="bottom-bar-item"><a href="/article/2019/hexo-speed-test/">→</a></span>
-            
-			<span class="bottom-bar-item"><a href="#footer">↓</a></span>
-			<span class="bottom-bar-item"><a href="#">↑</a></span>
-		</div>
-	</div>
-</div>
-
-
-<div class="related-post-lists">
-	<div class="post-lists">
-		<div class="post-lists-body">
-		
-			<div class="post-list-item">
-				<div class="post-list-item-container">
-					<div class="item-label">
-						<div class="item-title"><a href="/article/2019/hexo-nodejs-nginx/">Hexo | 服务端大变样，Node.js 接管后台</a></div>
-						<div class="item-meta clearfix">
-							<div class="item-meta-date" style="color: #5f5f5f;">Feb 12, 2019</div>
-							<div class="item-meta-ico bg-ico-link" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
-                            <div class="item-meta-cat">
-                                
-                                <a href="/categories/Coder/">Coder</a>
-                                
-                                <a href="/categories/Coder/Hexo/">Hexo</a>
-                                
-                            </div>
-                        </div>
-					</div>
-				</div>
-			</div>
-		
-			<div class="post-list-item">
-				<div class="post-list-item-container">
-					<div class="item-label">
-						<div class="item-title"><a href="/article/2019/hexo-speed-test/">Hexo | Pages服务速度对比</a></div>
-						<div class="item-meta clearfix">
-							<div class="item-meta-date" style="color: #5f5f5f;">Feb 06, 2019</div>
-							<div class="item-meta-ico bg-ico-code" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
-                            <div class="item-meta-cat">
-                                
-                                <a href="/categories/Coder/">Coder</a>
-                                
-                                <a href="/categories/Coder/Hexo/">Hexo</a>
-                                
-                            </div>
-                        </div>
-					</div>
-				</div>
-			</div>
-		
-			<div class="post-list-item">
-				<div class="post-list-item-container">
-					<div class="item-label">
-						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-2/">Hexo | 两个你可能会用到的icarus主题配置</a></div>
-						<div class="item-meta clearfix">
-							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-image" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
-                            <div class="item-meta-cat">
-                                
-                                <a href="/categories/Coder/">Coder</a>
-                                
-                                <a href="/categories/Coder/Hexo/">Hexo</a>
-                                
-                            </div>
-                        </div>
-					</div>
-				</div>
-			</div>
-		
-			<div class="post-list-item">
-				<div class="post-list-item-container">
-					<div class="item-label">
-						<div class="item-title"><a href="/article/2019/hexo-theme-icarus-1/">Hexo | icarus主题初体验</a></div>
-						<div class="item-meta clearfix">
-							<div class="item-meta-date" style="color: #5f5f5f;">Feb 02, 2019</div>
-							<div class="item-meta-ico bg-ico-link" style="background: url(/images/bg-ico.png) no-repeat;background-size: 40px auto;"></div>
-                            <div class="item-meta-cat">
-                                
-                                <a href="/categories/Coder/">Coder</a>
-                                
-                                <a href="/categories/Coder/Hexo/">Hexo</a>
-                                
-                            </div>
-                        </div>
-					</div>
-				</div>
-			</div>
-		
-		</div>
-	</div>
+        </div>
+        <!--added by susreal, article visit calculation-->
+        
+            <div class="level is-size-7 has-text-grey">
+                <div class="level-left">
+                    <i class="far fa-eye"></i>
+                    <span>&nbsp;</span>
+                    <span id="busuanzi_container_page_pv" style="display: inline;">
+                        <span id="busuanzi_value_page_pv">0</span>
+                    </span>
+                </div>
+            </div>
+        
+        <!--end-->
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Hexo/">Hexo</a>, <a class="has-link-grey -link" href="/tags/Nginx/">Nginx</a>, <a class="has-link-grey -link" href="/tags/腾讯云/">腾讯云</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
 </div>
 
 
 
-<div class="comment-container">
-	<div id="vcomments"></div>
-</div>
-
-
-<footer id="footer" class="footer bg-white">
-	<div class="footer-social">
-		<div class="footer-container clearfix">
-			<div class="social-list">
-                
-                    <a class="social" target="blank" href="https://web.okjike.com/user/7AB42093-406C-46EC-854E-75CEF51CC236">Jike</a>
-                
-                    <a class="social" target="blank" href="https://github.com/Susreal/">Github</a>
-                
-            </div>
-		</div>
-	</div>
-	<div class="footer-meta">
-		<div class="footer-container">
-			<div class="meta-item meta-copyright">
-				<div class="meta-copyright-info">
-                    <a href="https://susreal.com" class="info-logo">
-                        
-                        <img src="/images/logo.png" alt="摆柿阔落 | 肥宅快乐窝">
-                        
-                    </a>
-					<div class="info-text">
-                        <!-- <p id="chakhsu"></p> -->
-                        <p>📌 Copyright &copy; 2019 <a href="https://susreal.com">摆柿阔落</a></p>            
-						<p style="margin-top: 5px">🔋 Powered by <a href="https://hexo.io/" target="_blank" rel="nofollow">Hexo</a> and <a href="https://github.com/cccyb/hexo-theme-pinghsu" target="_blank">Pinghsu</a></p>
-                        <!-- <p style="margin-top: 10px">站点总字数：5.5k</p> -->
-                        
-                        <!-- <p><span id="busuanzi_container_site_pv" style='display:none'>本站总访问量 <span id="busuanzi_value_site_pv"></span> 次</span></p> -->
-                        <!-- <p><span id="busuanzi_container_site_uv" style='display:none'>本站访客数 <span id="busuanzi_value_site_uv"></span> 人次</span></p> -->
-                        <p style="margin-top: 5px">
-                            <span id="busuanzi_container_site_pv">
-                                ❤️ 感谢小伙伴
-                                <span id="busuanzi_value_site_pv">0</span>
-                                次陪伴
-                            </span>
-                        </p>
-                        
-                        
-                        <p style="margin-top: 5px"><a href="http://www.miibeian.gov.cn" target="_blank">👮 沪ICP备19004511号</a></p>
-                        
-                    </div>
-				</div>
-            </div>
-            
-            <div class="meta-item meta-posts">
-                <h3 class="meta-title">最近文章</h3>
-                
-                <li><a href="/article/2019/hexo-nodejs-nginx/">Hexo | 服务端大变样，Node.js 接管后台</a></li>
-                
-                <li><a href="/article/2019/hexo-cvm/">Hexo | 如何将博客部署在云服务器</a></li>
-                
-                <li><a href="/article/2019/hexo-speed-test/">Hexo | Pages服务速度对比</a></li>
-                
-                <li><a href="/article/2019/hexo-theme-icarus-2/">Hexo | 两个你可能会用到的icarus主题配置</a></li>
-                
-                <li><a href="/article/2019/hexo-theme-icarus-1/">Hexo | icarus主题初体验</a></li>
-                
-                <li><a href="/article/2019/hello-world/">猪事大吉</a></li>
-                
-            </div>
-            
-            
-            <div class="meta-item meta-comments">
-            </div>
-            
-		</div>
-	</div>
-</footer>
-
-
-<div id="directory-content" class="directory-content">
-    <div id="directory"></div>
-</div>
-<script>
-var postDirectoryBuild = function() {
-    var postChildren = function children(childNodes, reg) {
-        var result = [],
-            isReg = typeof reg === 'object',
-            isStr = typeof reg === 'string',
-            node, i, len;
-        for (i = 0, len = childNodes.length; i < len; i++) {
-            node = childNodes[i];
-            if ((node.nodeType === 1 || node.nodeType === 9) &&
-                (!reg ||
-                isReg && reg.test(node.tagName.toLowerCase()) ||
-                isStr && node.tagName.toLowerCase() === reg)) {
-                result.push(node);
-            }
-        }
-        return result;
-    },
-    createPostDirectory = function(article, directory, isDirNum) {
-        var contentArr = [],
-            titleId = [],
-            levelArr, root, level,
-            currentList, list, li, link, i, len;
-        levelArr = (function(article, contentArr, titleId) {
-            var titleElem = postChildren(article.childNodes, /^h\d$/),
-                levelArr = [],
-                lastNum = 1,
-                lastRevNum = 1,
-                count = 0,
-                guid = 1,
-                id = 'directory' + (Math.random() + '').replace(/\D/, ''),
-                lastRevNum, num, elem;
-            while (titleElem.length) {
-                elem = titleElem.shift();
-                contentArr.push(elem.innerHTML);
-                num = +elem.tagName.match(/\d/)[0];
-                if (num > lastNum) {
-                    levelArr.push(1);
-                    lastRevNum += 1;
-                } else if (num === lastRevNum ||
-                    num > lastRevNum && num <= lastNum) {
-                    levelArr.push(0);
-                    lastRevNum = lastRevNum;
-                } else if (num < lastRevNum) {
-                    levelArr.push(num - lastRevNum);
-                    lastRevNum = num;
-                }
-                count += levelArr[levelArr.length - 1];
-                lastNum = num;
-                elem.id = elem.id || (id + guid++);
-                titleId.push(elem.id);
-            }
-            if (count !== 0 && levelArr[0] === 1) levelArr[0] = 0;
-            return levelArr;
-        })(article, contentArr, titleId);
-        currentList = root = document.createElement('ul');
-        dirNum = [0];
-        for (i = 0, len = levelArr.length; i < len; i++) {
-            level = levelArr[i];
-            if (level === 1) {
-                list = document.createElement('ul');
-                if (!currentList.lastElementChild) {
-                    currentList.appendChild(document.createElement('li'));
-                }
-                currentList.lastElementChild.appendChild(list);
-                currentList = list;
-                dirNum.push(0);
-            } else if (level < 0) {
-                level *= 2;
-                while (level++) {
-                    if (level % 2) dirNum.pop();
-                    currentList = currentList.parentNode;
-                }
-            }
-            dirNum[dirNum.length - 1]++;
-            li = document.createElement('li');
-            link = document.createElement('a');
-            link.href = '#' + titleId[i];
-            link.innerHTML = !isDirNum ? contentArr[i] :
-                dirNum.join('.') + ' ' + contentArr[i] ;
-            li.appendChild(link);
-            currentList.appendChild(li);
-        }
-        directory.appendChild(root);
-    };
-    createPostDirectory(document.getElementById('post-content'),document.getElementById('directory'), true);
-};
-postDirectoryBuild();
-</script>
-
-<script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
-
-<script src="//cdn.bootcss.com/highlight.js/9.10.0/highlight.min.js"></script>
-
-
-
-<script src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
-
-<script>
-
-var postDirectory = new Headroom(document.getElementById("directory-content"), {
-    tolerance: 0,
     
-    offset : 280,
+        <div class="card">
+            <div class="card-content">
+                <h3 class="menu-label has-text-centered">喜欢这篇文章？投喂一下吧！(๑•ㅂ•́)و✧ </h3>
+                <div class="buttons is-centered">
+                    
+                        
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.JPG" alt="支付宝"></div>
+</a>
+
+                        
+                        
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.JPG" alt="微信"></div>
+</a>
+
+                        
+                </div>
+            </div>
+        </div>
     
-    classes: {
-        initial: "initial",
-        pinned: "pinned",
-        unpinned: "unpinned"
-    }
-});
-postDirectory.init();
 
 
-var postSharer = new Headroom(document.getElementById("post-bottom-bar"), {
-    tolerance: 0,
-    offset : 70,
-    classes: {
-        initial: "animated",
-        pinned: "pinned",
-        unpinned: "unpinned"
-    }
-});
-postSharer.init();
 
-var header = new Headroom(document.getElementById("header"), {
-    tolerance: 0,
-    offset : 70,
-    classes: {
-      initial: "animated",
-      pinned: "slideDown",
-      unpinned: "slideUp"
-    }
-});
-header.init();
-
-hljs.initHighlightingOnLoad();
- 
-
-if ('addEventListener' in document) {
-    document.addEventListener('DOMContentLoaded', function() {
-        FastClick.attach(document.body);
-    }, false);
-}
-
-</script>
-<script>
-var words = 'Hexo,Theme,Pinghsu'.split(',').map(item => item.trim());
-var chakhsu = function(r){function t(){return b[Math.floor(Math.random()*b.length)]}function e(){return String.fromCharCode(94*Math.random()+33)}function n(r){for(var n=document.createDocumentFragment(),i=0;r>i;i++){var l=document.createElement("span");l.textContent=e(),l.style.color=t(),n.appendChild(l)}return n}function i(){var t=o[c.skillI];c.step?c.step--:(c.step=g,c.prefixP<l.length?(c.prefixP>=0&&(c.text+=l[c.prefixP]),c.prefixP++):"forward"===c.direction?c.skillP<t.length?(c.text+=t[c.skillP],c.skillP++):c.delay?c.delay--:(c.direction="backward",c.delay=a):c.skillP>0?(c.text=c.text.slice(0,-1),c.skillP--):(c.skillI=(c.skillI+1)%o.length,c.direction="forward")),r.textContent=c.text,r.appendChild(n(c.prefixP<l.length?Math.min(s,s+c.prefixP):Math.min(s,t.length-c.skillP))),setTimeout(i,d)}var l="I work with ",o=words.map(function(r){return r+"."}),a=2,g=1,s=5,d=75,b=["rgb(110,64,170)","rgb(150,61,179)","rgb(191,60,175)","rgb(228,65,157)","rgb(254,75,131)","rgb(255,94,99)","rgb(255,120,71)","rgb(251,150,51)","rgb(226,183,47)","rgb(198,214,60)","rgb(175,240,91)","rgb(127,246,88)","rgb(82,246,103)","rgb(48,239,130)","rgb(29,223,163)","rgb(26,199,194)","rgb(35,171,216)","rgb(54,140,225)","rgb(76,110,219)","rgb(96,84,200)"],c={text:"",prefixP:-s,skillI:0,skillP:0,direction:"forward",delay:a,step:g};i()};chakhsu(document.getElementById('chakhsu')); if ('addEventListener' in document) { document.addEventListener('DOMContentLoaded', function() { FastClick.attach(document.body); }, false); }
-</script>
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-    showProcessingMessages: false,
-    messageStyle: "none",
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
-        ignoreClass:"comment-content"
-    },
-    "HTML-CSS": {
-        availableFonts: ["STIX","TeX"],
-        showMathMenu: false
-    }
-});
-MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-</script>
-<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/article/2019/hexo-nodejs-nginx/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Hexo | 服务端大变样，Node.js 接管后台</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/article/2019/hexo-speed-test/">
+                <span class="level-item">Hexo | Pages服务速度对比</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-
-<script src="/js/love.js"></script>
-
-
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        <!--added by susreal-->
+        <div class="block is-size-6">
+            <!-- <div class="level-left"> -->
+                <div>
+                    <span style="color:#1abc9c;">📧 邮箱：</span>
+                    <span>留下邮箱，别人回复后会收到通知喔</span>
+                </div>
+                <div>
+                    <span style="color:#1abc9c;">😉 头像：</span>
+                    <span>自动同步邮箱对应的<a href="https://cn.gravatar.com/">「Gravatar」</a>头像</span>
+                </div>
+            <!-- </div> -->
+        </div>
+        <!--end-->
+        
+<div id="valine-thread" class="content"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<!-- search and delete "+'&v='+o+d" -->
+<!-- <script src='/js/Valine.min.js'></script> -->
 <script>
     new Valine({
-        el: '#vcomments',
-        appId: 'xAg1tsfDq04PUHBx5GMTVQAV-gzGzoHsz',
-        appKey: 'I1Vc56bDFcfSKA2uzcXd63Qx',
-        placeholder: '随便说说什么吧' || 'Your commnet here. Be cool.',
-        avatar: 'identicon' || 'mp',
-        pageSize: 5 || 10,
-        visitor: true
-    })
+        el: '#valine-thread' ,
+        notify: false,
+        verify: false,
+        app_id: 'xAg1tsfDq04PUHBx5GMTVQAV-gzGzoHsz',
+        app_key: 'I1Vc56bDFcfSKA2uzcXd63Qx',
+        placeholder: '随便说说什么吧',
+        avatar: 'identicon',
+        pageSize: 5
+    });
 </script>
 
+    </div>
+</div>
+</div>
+                
 
+
+
+
+<div class="column is-4-tablet is-4-desktop is-4-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/a3496ae7621e5f79c2cfca52ce9afa1d?s=128" alt="摆柿阔落">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block has-mb-6">
+                        摆柿阔落
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block has-mb-6">
+                        🖥 PM feat. Coder
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Shanghai, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        3
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" target="_blank" href="https://github.com/Susreal">
+                关注我</a>
+        </div>
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#准备工作">
+        <span class="has-mr-6">1</span>
+        <span>准备工作</span>
+        </a></li><li>
+        <a class="is-flex" href="#部署步骤">
+        <span class="has-mr-6">2</span>
+        <span>部署步骤</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#登陆云服务器">
+        <span class="has-mr-6">2.1</span>
+        <span>登陆云服务器</span>
+        </a></li><li>
+        <a class="is-flex" href="#服务器环境准备">
+        <span class="has-mr-6">2.2</span>
+        <span>服务器环境准备</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Git">
+        <span class="has-mr-6">2.2.1</span>
+        <span>Git</span>
+        </a></li><li>
+        <a class="is-flex" href="#Nginx">
+        <span class="has-mr-6">2.2.2</span>
+        <span>Nginx</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#博客自动发布">
+        <span class="has-mr-6">2.3</span>
+        <span>博客自动发布</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#静态网站文件目录">
+        <span class="has-mr-6">2.3.1</span>
+        <span>静态网站文件目录</span>
+        </a></li><li>
+        <a class="is-flex" href="#服务器设置">
+        <span class="has-mr-6">2.3.2</span>
+        <span>服务器设置</span>
+        </a></li><li>
+        <a class="is-flex" href="#本地-Hexo-设置">
+        <span class="has-mr-6">2.3.3</span>
+        <span>本地 Hexo 设置</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#服务器-Nginx-配置">
+        <span class="has-mr-6">2.4</span>
+        <span>服务器 Nginx 配置</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#启动-Nginx-服务">
+        <span class="has-mr-6">2.4.1</span>
+        <span>启动 Nginx 服务</span>
+        </a></li><li>
+        <a class="is-flex" href="#配置-Nginx-根目录">
+        <span class="has-mr-6">2.4.2</span>
+        <span>配置 Nginx 根目录</span>
+        </a></li><li>
+        <a class="is-flex" href="#绑定域名">
+        <span class="has-mr-6">2.4.3</span>
+        <span>绑定域名</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#强制重定向至https">
+        <span class="has-mr-6">2.5</span>
+        <span>强制重定向至https</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#购买ssl证书">
+        <span class="has-mr-6">2.5.1</span>
+        <span>购买ssl证书</span>
+        </a></li><li>
+        <a class="is-flex" href="#上传ssl证书">
+        <span class="has-mr-6">2.5.2</span>
+        <span>上传ssl证书</span>
+        </a></li><li>
+        <a class="is-flex" href="#修改-Nginx-默认设置">
+        <span class="has-mr-6">2.5.3</span>
+        <span>修改 Nginx 默认设置</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#参考文章">
+        <span class="has-mr-6">2.6</span>
+        <span>参考文章</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Coder/">
+            <span class="level-start">
+                <span class="level-item">Coder</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Coder/Hexo/">
+            <span class="level-start">
+                <span class="level-item">Hexo</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/FreeTalk/">
+            <span class="level-start">
+                <span class="level-item">FreeTalk</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/FreeTalk/" style="font-size: 10px;">FreeTalk</a> <a href="/tags/Hexo/" style="font-size: 20px;">Hexo</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/Pages/" style="font-size: 10px;">Pages</a> <a href="/tags/icarus/" style="font-size: 15px;">icarus</a> <a href="/tags/腾讯云/" style="font-size: 10px;">腾讯云</a>
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-nodejs-nginx/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-nodejs-nginx/0.jpeg" alt="Hexo | 服务端大变样，Node.js 接管后台">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-12T15:02:15.000Z">2019-02-12</time></div>
+                    <a href="/article/2019/hexo-nodejs-nginx/" class="has-link-black-ter is-size-6">Hexo | 服务端大变样，Node.js 接管后台</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-cvm/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-cvm/0.jpg" alt="Hexo | 如何将博客部署在云服务器">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T12:35:26.000Z">2019-02-10</time></div>
+                    <a href="/article/2019/hexo-cvm/" class="has-link-black-ter is-size-6">Hexo | 如何将博客部署在云服务器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-speed-test/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-speed-test/0.jpg" alt="Hexo | Pages服务速度对比">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T11:47:59.000Z">2019-02-06</time></div>
+                    <a href="/article/2019/hexo-speed-test/" class="has-link-black-ter is-size-6">Hexo | Pages服务速度对比</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-2/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-2/0.jpg" alt="Hexo | 两个你可能会用到的icarus主题配置">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:13:15.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-2/" class="has-link-black-ter is-size-6">Hexo | 两个你可能会用到的icarus主题配置</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/article/2019/hexo-theme-icarus-1/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/article/2019/hexo-theme-icarus-1/0.jpg" alt="Hexo | icarus主题初体验">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-01T16:10:01.000Z">2019-02-02</time></div>
+                    <a href="/article/2019/hexo-theme-icarus-1/" class="has-link-black-ter is-size-6">Hexo | icarus主题初体验</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Coder/">Coder</a> / <a class="has-link-grey -link" href="/categories/Coder/Hexo/">Hexo</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Hexo | 如何将博客部署在云服务器" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2019 摆柿阔落&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                </p>
+                <!--added by susreal, count pv and uv-->
+                
+                    <p class="is-size-7">   
+                        <span id="busuanzi_container_site_uv">
+                            ❤️ 感谢
+                            <span id="busuanzi_value_site_uv">0</span>
+                            位小伙伴的
+                        </span>
+                        <span id="busuanzi_container_site_pv">
+                            <span id="busuanzi_value_site_pv">0</span>
+                            次陪伴
+                        </span>
+                    </p>
+                
+                <!--end--> 
+                <p id="icp" class="is-size-7">
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备19004511号</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/Susreal">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var hostname = location.hostname;
+        if (hostname!="susreal.com" && hostname!="www.susreal.com") {
+            var icp = document.getElementById('icp');
+            icp.style.display="none";
+        }
+    </script>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
 <script>
-
-// 获取文章评论数
-var query1 = new AV.Query('Comment');
-query1.equalTo('url', '/article/2019/hexo-cvm/');
-query1.doesNotExist('pid');
-query1.count().then(function (count) {
-    document.getElementById('page-title-comment').innerText = count + ' comment';
-}, function (error) {
-    console.log(error.message);    
-}).catch(function (error) {
-    console.log(error.message);
-});
-
-
-
-// 获取最近评论
-var query2 = new AV.Query('Comment');
-query2.doesNotExist('pid');
-query2.descending('createdAt');
-query2.limit(8);
-query2.find().then(function (data) {
-    var _dom = '<h3 class="meta-title">最近评论</h3>';
-    data.forEach(function(comment) {
-        const plainComment = comment.get('comment').replace(/<[^>]+>/gim, '');
-        const href = `${comment.get('url')}#${comment.get('objectId')}`;
-        _dom += `<li><a href="${href}">${comment.get('nick')} : ${plainComment}</a></li>`
-    })
-    document.getElementsByClassName('meta-comments')[0].innerHTML = _dom;
-}, function (error) {
-    console.log(error.message);    
-}).catch(function (error) {
-    console.log(error.message);
-});
-
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
 </script>
 
 
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
