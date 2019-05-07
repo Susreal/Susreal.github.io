@@ -1,3 +1,4 @@
+https://susreal.com/article/2019/hexo-theme-icarus-3/
 https://susreal.com/article/2019/hexo-nodejs-nginx/
 https://susreal.com/article/2019/hexo-cvm/
 https://susreal.com/article/2019/hexo-speed-test/
