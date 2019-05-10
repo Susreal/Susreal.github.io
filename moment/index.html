@@ -7,19 +7,19 @@
 
 
 
-    <meta name="description" content="Jesse Schoff                          @jesseschoff                          Bulma, I think I’m in love. bulma.io via @jgthms                9:10 P">
+    <meta name="description" content="var content_node = document.getElementsByClassName(&quot;content&quot;)[0];//momentss.parentNode;     var article_node = content_node.parentNode;     var card_node = article_node.parentNode;     var column">
 <meta name="keywords" content="产品经理,IT,博客,技术,PM,即刻,代码,码农,Coding,Blog,Hexo,Icarus,Github">
 <meta property="og:type" content="website">
 <meta property="og:title" content="moment">
 <meta property="og:url" content="https://susreal.com/moment/index.html">
 <meta property="og:site_name" content="摆柿阔落 | 肥宅快乐窝">
-<meta property="og:description" content="Jesse Schoff                          @jesseschoff                          Bulma, I think I’m in love. bulma.io via @jgthms                9:10 P">
+<meta property="og:description" content="var content_node = document.getElementsByClassName(&quot;content&quot;)[0];//momentss.parentNode;     var article_node = content_node.parentNode;     var card_node = article_node.parentNode;     var column">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://susreal.com/images/og_image.png">
-<meta property="og:updated_time" content="2019-05-08T13:39:45.226Z">
+<meta property="og:updated_time" content="2019-05-10T16:11:21.616Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="moment">
-<meta name="twitter:description" content="Jesse Schoff                          @jesseschoff                          Bulma, I think I’m in love. bulma.io via @jgthms                9:10 P">
+<meta name="twitter:description" content="var content_node = document.getElementsByClassName(&quot;content&quot;)[0];//momentss.parentNode;     var article_node = content_node.parentNode;     var card_node = article_node.parentNode;     var column">
 <meta name="twitter:image" content="https://susreal.com/images/og_image.png">
 
 
@@ -163,10 +163,48 @@ var _hmt = _hmt || [];
             
         </h1>
         <div class="content">
-            <div class="columns" id="moments"><br>    <div class="column is-4"><br><article class="bd-tw bd-is-white "><br>  <header class="bd-tw-header"><br>    <a class="bd-tw-author" href="https://twitter.com/jesseschoff/status/869284735440363520" target="_blank"><br>      <figure class="bd-tw-avatar"><br>        <img class="lazyload" src="https://pbs.twimg.com/profile_images/663874141854961666/HXz-_UA4_normal.jpg"><br>      </figure><br>      <div class="bd-tw-name"><br>        <strong class="bd-tw-fullname"><br>          Jesse Schoff<br>        </strong><br>        <span class="bd-tw-username"><br>          @jesseschoff<br>        </span><br>      </div><br>    </a><br>  </header><br><br>  <div class="bd-tw-content"><br>    Bulma, I think I’m in love. <a href="https://t.co/APYefmC1Bs" target="_blank" rel="noopener">bulma.io</a> via <a href="https://twitter.com/jgthms" target="_blank" rel="noopener">@jgthms</a><br>  </div>
-
-<p>  </p><p class="bd-tw-date"><br>    <a href="https://twitter.com/jesseschoff/status/869284735440363520" target="_blank"><br>      9:10 PM - 29 May 2017<br>    </a><br>  </p><br></article><br>    </div><br>    <div class="column is-4"><br>        <div class="card"><br>            <div class="card-content"><br>                Second<br>            </div><br>        </div><br>    </div><br>    <div class="column is-4"><br>        <div class="card"><br>            <div class="card-content"><br>                Third<br>            </div><br>        </div><br>    </div><br></div><p></p>
-
+            <script type="text/javascript">
+    var content_node = document.getElementsByClassName("content")[0];//momentss.parentNode;
+    var article_node = content_node.parentNode;
+    var card_node = article_node.parentNode;
+    var column_node = card_node.parentNode;
+    var moments_node = document.createElement("div");
+    var column_counts = 3;
+    if (document.body.clientWidth<=400) {
+        moments_node.innerHTML = "<div class=\"columns is-mobile is-multiline\" id=\"moments\"><div class=\"column is-6\" id=\"column-1\"></div><div class=\"column is-6\" id=\"column-2\"></div></div>";
+        column_counts = 2;
+    } else {
+        moments_node.innerHTML = "<div class=\"columns is-mobile is-multiline\" id=\"moments\"><div class=\"column is-4\" id=\"column-1\"></div><div class=\"column is-4\" id=\"column-2\"></div><div class=\"column is-4\" id=\"column-3\"></div></div>";
+        column_counts = 3;
+    }
+    column_node.insertBefore(moments_node,column_node.childNodes[0]);
+    card_node.style.display="none";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    $.getJSON("moments.json",function (data) {
+        var moments = data;
+        for (var i = 0; i < moments.length; i++) {
+            var main_card = document.createElement("div");
+            main_card.className = "card";
+            var card_content = document.createElement("div");
+            card_content.className = "card-content";
+            card_content.style.padding = "1rem";
+            card_content.innerHTML = "<p style=\"font-size: 14px;line-height: 1.4;margin-bottom: 0.5em;color: #697882;text-align: left\">" + moments[i].crt_time + "</p>";
+            card_content.innerHTML += "<p>"+moments[i].text+"</p>";
+            if (moments[i].imageUrl) {
+                var image_node = document.createElement("img");
+                image_node.src = moments[i].imageUrl;
+                main_card.insertBefore(image_node,main_card.childNodes[0]);
+            }
+            main_card.appendChild(card_content);
+            var c_column = document.getElementById("column-"+(i%column_counts+1));
+            c_column.appendChild(main_card);
+        }
+    });
+})
+</script>
         </div>
         <!--added by susreal, article visit calculation-->
         
