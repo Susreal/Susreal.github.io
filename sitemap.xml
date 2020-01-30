@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://susreal.com/article/2020/miniprogram/</loc>
+    
+    <lastmod>2020-01-30T14:14:17.821Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://susreal.com/moment/moments.json</loc>
     
     <lastmod>2019-05-10T16:26:39.967Z</lastmod>
