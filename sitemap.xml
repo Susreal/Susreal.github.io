@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://susreal.com/playground/index.html</loc>
+    
+    <lastmod>2021-05-11T04:36:05.239Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://susreal.com/article/2020/miniprogram-2/</loc>
     
     <lastmod>2020-02-06T10:59:59.938Z</lastmod>
@@ -103,13 +110,6 @@
     <loc>https://susreal.com/categories/index.html</loc>
     
     <lastmod>2019-05-06T12:28:31.068Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://susreal.com/playground/index.html</loc>
-    
-    <lastmod>2019-02-18T09:39:14.444Z</lastmod>
     
   </url>
   
